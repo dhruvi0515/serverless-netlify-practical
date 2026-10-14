@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serverless Computing Lab</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .card {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000015;
+        }
+        h1 { color: #2457a7; }
+        p { color: #444; line-height: 1.6; }
+        button {
+            background: #2457a7;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:disabled { opacity: 0.6; cursor: wait; }
+        #result {
+            margin-top: 20px;
+            white-space: pre-line;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Serverless Computing</h1>
+        <p>Cloud Computing Lab Practical 6</p>
+        <p>This application uses a Netlify Function to process requests.</p>
+
+        <button id="callFunction">Call Serverless Function</button>
+        <p id="result" aria-live="polite">Click the button to test the function.</p>
+    </div>
+
+    <script>
+        const button = document.getElementById("callFunction");
+        const result = document.getElementById("result");
+
+        button.addEventListener("click", async () => {
+            button.disabled = true;
+            result.textContent = "Calling serverless function...";
+
+            try {
+                const response = await fetch("/.netlify/functions/greet");
+
+                if (!response.ok) {
+                    throw new Error("Request failed with status " + response.status);
+                }
+
+                const data = await response.json();
+                result.textContent = data.message;
+            } catch (error) {
+                result.textContent = "Could not call the function. Please try again.";
+            } finally {
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
